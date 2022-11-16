@@ -24,12 +24,14 @@ contract Voting is Ownable {
         uint256 idCandidate,
         string firstName,
         string lastName,
-        string party
+        string party,
+        uint256 votes
     );
 
     event newVote(
         uint256 idCandidate,
-        address voter
+        address voter,
+        uint256 votes
     );
 
     // Functions
@@ -43,14 +45,15 @@ contract Voting is Ownable {
     {
         uint256 id = counter.current();
         candidates[id] = Candidate(id, _firstName, _lastName, _party, 0);
-        emit newCandidate(id, _firstName, _lastName, _party);
+        emit newCandidate(id, _firstName, _lastName, _party, 0);
+        counter.increment();
     }
 
     function vote(uint256 _idCandidate) public {
         require(hasVoted[msg.sender] == false, "You can't vote more than once");
         candidates[_idCandidate].votes += 1;
         hasVoted[msg.sender] = true;
-        emit newVote(_idCandidate, msg.sender);
+        emit newVote(_idCandidate, msg.sender, candidates[_idCandidate].votes);
     }
 
 }
